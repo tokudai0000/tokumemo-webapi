@@ -1,0 +1,155 @@
+# Shitf + option(Alt) + P
+
+openapi: 3.0.2
+
+info:   # API に関する情報をまとめる
+  title: Tokumemo
+  version: 0.1.0
+  description: This is a Tokumemo server.
+  # termsOfService: http://swagger.io/terms/
+  contact:
+    email: tokumemo1@gmail.com
+  license:
+    name: Copyright (C) 2022 tokudai00000
+    url: http://tokudai0000.com/license #未定
+
+externalDocs:
+  description: Find out more about tokumemoWebApi
+  url: http://tokudai0000.com/docs
+
+servers:    # 実際に API が配備されている URL を載せる
+  - url: http://localhost:8080/
+    description: Stub API
+    # Stub API server 起動方法
+    # ・JavaSE, node.js が使える状態にする
+    # ・./make_Stub.sh を実行
+  - url: https://api.tokudai0000.com/
+    description: Verify API
+  - url: https://api.tokudai0000.com/
+    description: Product API
+
+tags:   # API のタグによる分類
+  - name: baseAPI
+    description: 基本API
+
+  # - name: optionAPI
+  #   description: オプション(課金)API
+
+
+paths:    # API エンドポイント
+
+  "/info":
+    get:
+      operationId: getUserNotice
+      tags: [baseAPI]
+      summary: お知らせ情報の確認
+      description: ""
+      parameters:
+        - name: userId
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/resGetUserAffinity"
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized - Bad token
+        "404":
+          description: Not Found - userId not found
+        "500":
+          description: Internal Server Error - サーバ一時停止メッセージ表示
+        "503":
+          description: Service Unavailable - 混雑中メッセージ表示
+      # security:
+      #   - api_key: []
+
+  "/contact":
+    post:
+      operationId: postUser
+      tags: [baseAPI]
+      summary: お問合せフォーム
+      description: ""
+      requestBody:
+        description: ""
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Contsct"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/resContact"
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found - userId not found
+        "500":
+          description: Internal Server Error - サーバ一時停止メッセージ表示
+        "503":
+          description: Service Unavailable - 混雑中メッセージ表示
+      # security:
+      #   - api_key: []
+
+
+components:
+  schemas:  # 基本モデル
+    resContact:
+    description: お問合せ内容の受信が完了したか
+    type: object
+
+    resInfo:
+        Status:
+        description: 状態
+        type: string
+        maxLength: 100
+        example: "200"
+
+    Contsct:
+      description: お問合せ内容の送信
+      type: object
+      properties:
+        ApiKey:
+          description: ApiKey
+          type: string
+          maxLength: 100
+          example: "aaaa"
+        Contents:
+          description: お問合せ内容
+          type: string
+          maxLength: 500
+          example: ""
+        Status:
+          description: 状態
+          type: string
+          maxLength: 100
+          example: "200"
+
+    resContact:
+      description: お問合せ内容の受信が完了したか
+      type: object
+      properties:
+          Status:
+          description: 状態
+          type: string
+          maxLength: 100
+          example: "200"
+
+
+
+  # securitySchemes:
+  #   ApiKey:
+  #     type: apiKey
+  #     name: api_key
+  #     in: header
+
